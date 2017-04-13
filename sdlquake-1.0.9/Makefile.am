@@ -64,8 +64,7 @@ sdlquake_SOURCES =		\
 	modelgen.h		\
 	mpdosock.h		\
 	net.h			\
-	net_bsd.c		\
-	net_bw.h		\
+    net_none.c		\
 	net_dgrm.c		\
 	net_dgrm.h		\
 	net_loop.c		\
