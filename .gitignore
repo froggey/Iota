@@ -2,3 +2,8 @@
 /newlib-build
 /sdl-build
 /prboom-build
+/prboom.lisp
+/sdlquake-build
+/sdlquake.lisp
+
+*.fasl
