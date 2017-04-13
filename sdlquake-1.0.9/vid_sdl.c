@@ -133,7 +133,7 @@ void    VID_Update (vrect_t *rects)
         ++n;
 
     // Second, copy them to SDL rectangles and update
-    if (!(sdlrects = (SDL_Rect *)alloca(n*sizeof(*sdlrects))))
+    if (!(sdlrects = (SDL_Rect *)malloc(n*sizeof(*sdlrects))))
         Sys_Error("Out of memory");
     i = 0;
     for (rect = rects; rect; rect = rect->pnext)
@@ -145,6 +145,7 @@ void    VID_Update (vrect_t *rects)
         ++i;
     }
     SDL_UpdateRects(screen, n, sdlrects);
+    free(sdlrects);
 }
 
 /*
