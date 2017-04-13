@@ -358,6 +358,11 @@ _BEGIN_STD_C
 #define _JBLEN 12
 #endif
 
+#ifdef __iota__
+/* One for the thunk index and one for luck. */
+#define _JBLEN 2
+#endif
+
 #ifdef _JBLEN
 #ifdef _JBTYPE
 typedef	_JBTYPE jmp_buf[_JBLEN];
