@@ -33,7 +33,6 @@ sdlquake_SOURCES =		\
 	crc.h			\
 	cvar.c			\
 	cvar.h			\
-	d_copy.S		\
 	d_edge.c		\
 	d_fill.c		\
 	d_iface.h		\
@@ -48,7 +47,6 @@ sdlquake_SOURCES =		\
 	d_sprite.c		\
 	d_surf.c		\
 	d_zpoint.c		\
-	dosasm.S		\
 	dosisms.h		\
 	draw.c			\
 	draw.h			\
@@ -73,7 +71,6 @@ sdlquake_SOURCES =		\
 	net_loop.c		\
 	net_loop.h		\
 	net_main.c		\
-	net_udp.c		\
 	net_udp.h		\
 	net_vcr.c		\
 	net_vcr.h		\
@@ -103,7 +100,6 @@ sdlquake_SOURCES =		\
 	r_sprite.c		\
 	r_surf.c		\
 	r_vars.c		\
-	r_varsa.S		\
 	render.h		\
 	resource.h		\
 	sbar.c			\
@@ -136,7 +132,7 @@ sdlquake_SOURCES =		\
 	world.h			\
 	zone.c			\
 	zone.h			\
-	$(X86_SRCS) $(NONX86_SRCS)
+	$(NONX86_SRCS)  \
 
 X86_SRCS =			\
 	snd_mixa.S		\
