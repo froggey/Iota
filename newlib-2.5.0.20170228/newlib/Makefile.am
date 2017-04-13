@@ -171,7 +171,7 @@ libc.a: libc/libc.a libm/libm.a
 	cd tmp; \
 	 $(AR) x ../libm/libm.a ; \
 	 $(AR) x ../libc/libc.a ; \
-     $(LLVM_LINK) -o=../$@ *.o
+     $(LLVM_LINK) *.o -o=../$@
 	ln libc.a libg.a >/dev/null 2>/dev/null || cp libc.a libg.a
 	rm -rf tmp
 

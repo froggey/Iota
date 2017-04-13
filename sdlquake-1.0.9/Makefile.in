@@ -210,7 +210,7 @@ maintainer-clean-compile:
 
 sdlquake: $(sdlquake_OBJECTS) $(sdlquake_DEPENDENCIES)
 	@rm -f sdlquake
-	$(LLVM_LINK) -o=sdlquake $(sdlquake_OBJECTS) ../sysroot/le32-iota/lib/libSDL.a ../sysroot/le32-iota/lib/libc.a
+	$(LLVM_LINK) $(sdlquake_OBJECTS) ../sysroot/le32-iota/lib/libSDL.a ../sysroot/le32-iota/lib/libc.a -o=$@
 #	$(LINK) $(sdlquake_LDFLAGS) $(sdlquake_OBJECTS) $(sdlquake_LDADD) $(LIBS)
 
 tags: TAGS

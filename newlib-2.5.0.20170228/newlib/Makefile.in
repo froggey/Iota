@@ -924,7 +924,7 @@ uninstall-am: uninstall-toollibDATA uninstall-toollibLIBRARIES \
 @USE_LIBTOOL_FALSE@	cd tmp; \
 @USE_LIBTOOL_FALSE@	 $(AR) x ../libm/libm.a ; \
 @USE_LIBTOOL_FALSE@	 $(AR) x ../libc/libc.a ; \
-@USE_LIBTOOL_FALSE@	 $(LLVM_LINK) -o=../$@ *.o
+@USE_LIBTOOL_FALSE@	 $(LLVM_LINK) *.o -o=../$@
 @USE_LIBTOOL_FALSE@	ln libc.a libg.a >/dev/null 2>/dev/null || cp libc.a libg.a
 @USE_LIBTOOL_FALSE@	rm -rf tmp
 

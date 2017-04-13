@@ -72,7 +72,7 @@ depend:
 include $(depend)
 
 $(objects)/$(TARGET): $(OBJECTS)
-	$(LLVM_LINK) -o=$@ $(^:.lo=.o)
+	$(LLVM_LINK) $(^:.lo=.o) -o=$@
 #	$(LIBTOOL) --mode=link $(CC) -o $@ $^ $(LDFLAGS) $(EXTRA_LDFLAGS) $(LT_LDFLAGS)
 
 $(objects)/$(SDLMAIN_TARGET): $(SDLMAIN_OBJECTS)
