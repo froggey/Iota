@@ -22,7 +22,7 @@
 
 autom4te.cache
 config.cache
-config.h
+/config.h
 config.intl
 config.log
 config.status
