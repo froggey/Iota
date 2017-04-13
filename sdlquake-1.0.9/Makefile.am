@@ -12,7 +12,7 @@ sdlquake_SOURCES =		\
 	block16.h		\
 	block8.h		\
 	bspfile.h		\
-	cd_sdl.c		\
+    cd_null.c       \
 	cdaudio.h		\
 	chase.c			\
 	cl_demo.c		\

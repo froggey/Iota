@@ -56,7 +56,11 @@ void    VID_Init (unsigned char *palette)
     Uint32 flags;
 
     // Load the SDL library
-    if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_CDROM) < 0)
+    if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO
+#ifndef __iota__
+                 |SDL_INIT_CDROM
+#endif
+       ) < 0)
         Sys_Error("VID: Couldn't load SDL: %s", SDL_GetError());
 
     // Set up display mode (width and height)
