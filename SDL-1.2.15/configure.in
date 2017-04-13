@@ -2831,6 +2831,21 @@ case "$host" in
         # The RISC OS platform requires special setup.
         EXTRA_LDFLAGS="$EXTRA_LDFLAGS -ljpeg -ltiff -lpng -lz"
         ;;
+    *-iota)
+        ARCH=iota
+        # Set up files for the video library
+        if test x$enable_video = xyes; then
+            AC_DEFINE(SDL_VIDEO_DRIVER_IOTA)
+            SOURCES="$SOURCES $srcdir/src/video/iota/*.c"
+            have_video=yes
+        fi
+        # Set up files for the timer library
+        if test x$enable_timers = xyes; then
+            AC_DEFINE(SDL_TIMER_UNIX)
+            SOURCES="$SOURCES $srcdir/src/timer/unix/*.c"
+            have_timers=yes
+        fi
+        ;;
     *)
         AC_MSG_ERROR([
 *** Unsupported host:  Please add to configure.in
