@@ -55,6 +55,7 @@
 #define FALSE 0
 
 #ifndef HAVE_STRLWR
+#ifndef __iota__
 #include <ctype.h>
 
 static char* strlwr(char* str)
@@ -63,6 +64,7 @@ static char* strlwr(char* str)
   for (p=str; *p; p++) *p = tolower(*p);
   return str;
 }
+#endif
 #endif
 
 // killough 10/98: new functions, to allow processing DEH files in-memory

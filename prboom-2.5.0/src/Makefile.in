@@ -285,7 +285,7 @@ COMMON_SRC = \
  r_filter.c     r_filter.h
 
 NET_CLIENT_SRC = d_client.c
-@BUILD_GL_FALSE@USE_GL_SRC = 
+@BUILD_GL_FALSE@USE_GL_SRC =
 @BUILD_GL_TRUE@USE_GL_SRC = gl_intern.h  gl_main.c  gl_struct.h  gl_texture.c
 @WAD_MMAP_FALSE@WAD_SRC = w_memcache.c
 @WAD_MMAP_TRUE@WAD_SRC = w_mmap.c
@@ -350,10 +350,11 @@ uninstall-gamesPROGRAMS:
 
 clean-gamesPROGRAMS:
 	-test -z "$(games_PROGRAMS)" || rm -f $(games_PROGRAMS)
-prboom$(EXEEXT): $(prboom_OBJECTS) $(prboom_DEPENDENCIES) 
+prboom$(EXEEXT): $(prboom_OBJECTS) $(prboom_DEPENDENCIES)
 	@rm -f prboom$(EXEEXT)
-	$(LINK) $(prboom_OBJECTS) $(prboom_LDADD) $(LIBS)
-prboom-game-server$(EXEEXT): $(prboom_game_server_OBJECTS) $(prboom_game_server_DEPENDENCIES) 
+	$(LLVM_LINK) -o=$@ $(prboom_OBJECTS) SDL/*.o ../../sysroot/le32-iota/lib/libSDL.a ../../sysroot/le32-iota/lib/libc.a
+#	$(LINK) $(prboom_OBJECTS) $(prboom_LDADD) $(LIBS)
+prboom-game-server$(EXEEXT): $(prboom_game_server_OBJECTS) $(prboom_game_server_DEPENDENCIES)
 	@rm -f prboom-game-server$(EXEEXT)
 	$(LINK) $(prboom_game_server_OBJECTS) $(prboom_game_server_LDADD) $(LIBS)
 
