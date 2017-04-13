@@ -34,3 +34,11 @@ static char *initial_env[] = { 0 };
 /* Posix says `environ' is a pointer to a null terminated list of pointers.
    Hence `environ' itself is never NULL.  */
 char **environ = &initial_env[0];
+
+extern void exit(int status);
+extern int main(int argc, char **argv, char **envp);
+
+void _start(int argc, char **argv, char **envp) {
+    environ = envp;
+    exit(main(argc, argv, envp));
+}
