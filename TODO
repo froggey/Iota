@@ -1,0 +1,31 @@
+Better integration of C library functions (memcpy, etc).
+  Newlib provides generic versions of memcpy/memset/etc, however implementations
+  in Lisp will perform better. Figure out how to override newlib's functions.
+  LLVM's memcpy/memset intrinsics already call into Lisp.
+  Consider replacing newlib's generic math functions too.
+
+A linker.
+  Not having a linker prevents clang from actually producing a final, linked
+  executable. This breaks most projects and requires a pile of build-system
+  hacks to work around.
+  The linker should handle archives and produce a fully linked LLVM bitcode file
+  as output, ready to be run through the translator.
+  PNaCl uses gold with a custom driver in clang, this seems like a good place to
+  start.
+
+Improved syscall interface.
+  Unix syscalls (open/close/read/write/etc) currently are performed by calling
+  undefined C functions that have Lisp implementations.
+  Using undefined functions will probably mess up a future linker implementation
+  and a better approach will be needed.
+
+Vector/SIMD support.
+  LLVM vector operations are currently converted to scalar code.
+
+C++ support.
+  Will initally require porting compiler-rt, libc++abi, and libc++.
+  C++ exceptions will require PNaCl's SjLj exception lowering pass as well.
+
+Represent i1 as generalized booleans.
+  i1 integers are currently implemented using regular integers,
+  using booleans should improve performance.
