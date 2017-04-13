@@ -4,6 +4,11 @@
 #include <machine/ieeefp.h>  /* floating point macros */
 #include <sys/features.h>	/* POSIX defs */
 
+#ifdef __iota__
+#define stat64 stat
+#define __LARGE64_FILES 1
+#endif
+
 #ifdef __aarch64__
 #define MALLOC_ALIGNMENT 16
 #endif

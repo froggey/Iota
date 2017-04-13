@@ -319,6 +319,8 @@ case "${host_cpu}" in
 	newlib_cflags="${newlib_cflags} -DMISSING_SYSCALL_NAMES"
 	newlib_cflags="${newlib_cflags} -ffunction-sections -fdata-sections "
 	;;
+  le32)
+    ;;
   *)
 	echo '***' "Newlib does not support CPU ${host_cpu}" 1>&2
 	exit 1
@@ -376,6 +378,9 @@ esac
 # THIS TABLE IS ALPHA SORTED.  KEEP IT THAT WAY.
 
 case "${host}" in
+  *-*-iota*)
+	stdio64_dir=stdio64
+	;;
   *-*-cygwin*)
 	posix_dir=posix
 	stdio64_dir=stdio64

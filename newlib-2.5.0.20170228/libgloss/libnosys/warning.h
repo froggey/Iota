@@ -26,9 +26,13 @@
 
 #else /* !ELF */
 
+# ifdef __iota__
+#  define link_warning(symbol, msg)
+# else
 #  define link_warning(symbol, msg)             \
   asm(".stabs \"" msg "\",30,0,0,0\n"   \
       ".stabs \"" __SYMBOL_PREFIX #symbol "\",1,0,0,0\n");
+# endif
 # endif
 #else /* !GNULD */
 /* We will never be heard; they will all die horribly.  */
