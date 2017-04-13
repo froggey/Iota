@@ -129,6 +129,9 @@ static VideoBootStrap *bootstrap[] = {
 #if SDL_VIDEO_DRIVER_DUMMY
 	&DUMMY_bootstrap,
 #endif
+#if SDL_VIDEO_DRIVER_IOTA
+	&IOTA_bootstrap,
+#endif
 	NULL
 };
 

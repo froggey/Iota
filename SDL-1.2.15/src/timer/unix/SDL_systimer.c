@@ -47,7 +47,9 @@
 #endif
 
 #if SDL_THREADS_DISABLED
+#ifndef __iota__
 #define USE_ITIMER
+#endif
 #endif
 
 /* The first ticks value of the application */
