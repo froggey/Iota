@@ -29,3 +29,5 @@ C++ support.
 Represent i1 as generalized booleans.
   i1 integers are currently implemented using regular integers,
   using booleans should improve performance.
+
+-o option (output file name) for the translator.

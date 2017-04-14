@@ -1,4 +1,4 @@
-/sysroot
+/toolchain
 /newlib-build
 /sdl-build
 /prboom-build

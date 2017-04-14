@@ -6,7 +6,7 @@
 set -x
 set -e
 
-TOOLDIR=`pwd`/sysroot
+TOOLDIR=`pwd`/toolchain
 
 mkdir -p ${TOOLDIR}
 cd ${TOOLDIR}

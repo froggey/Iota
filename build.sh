@@ -3,7 +3,7 @@
 set -x
 set -e
 
-TOOLDIR=`pwd`/sysroot
+TOOLDIR=`pwd`/toolchain
 
 # Remove existing build directories before building.
 rm -rf newlib-build sdl-build prboom-build sdlquake-build
