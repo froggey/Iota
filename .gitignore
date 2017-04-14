@@ -6,4 +6,6 @@
 /sdlquake-build
 /sdlquake.lisp
 
+/id1/config.cfg
 *.fasl
+*.lx64fsl

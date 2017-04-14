@@ -31,3 +31,5 @@ Represent i1 as generalized booleans.
   using booleans should improve performance.
 
 -o option (output file name) for the translator.
+
+Support NAN/+INF/-INF float values.

@@ -1,0 +1,52 @@
+Iota is an LLVM to CL transpiler, similar to emscripten. It converts LLVM bitcode
+to safe, portable Common Lisp code.
+
+
+Quick Start
+-----
+
+# You'll probably want to make this available as a quicklisp local project.
+
+# Optional, for parallel builds
+export MAKEFLAGS=-j2
+
+# Clone the LLVM/Clang repos.
+./fetch-llvm.sh
+
+# Build LLVM, Clang, and the translator.
+# This will take a long time unless you have a beefy machine.
+./build-llvm.sh
+
+# Build & translate libraries and programs.
+./build.sh
+
+# Load into Lisp.
+lisp --load load.lisp
+
+# prboom & sdlquake can now be run using (CL-USER::RUN-PRBOOM) and (CL-USER::RUN-SDLQUAKE).
+
+
+Usage
+-----
+
+The build-llvm.sh and build.sh scripts build the translator and compiler,
+installing them in the toolchain/ subdirectory.
+C source code can be compiled to object files as normal using clang -c.
+There is no ld-style linker, so object code and libraries must be linked
+with llvm-link.
+The linked bitcode file can then be translated with iota.
+
+
+Example
+-----
+
+cat > example.c <<EOF
+#include <stdio.h>
+int main(int argc, char **argv) {
+    printf("Hello, World!\n");
+    return 0;
+}
+EOF
+toolchain/bin/clang -c example.c
+toolchain/bin/llvm-link -o=example.bc example.o toolchain/le32-iota/lib/libc.a
+toolchain/bin/iota -package=":example" example.bc > example.lisp
