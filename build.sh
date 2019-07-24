@@ -37,6 +37,9 @@ popd
 popd
 ${TOOLDIR}/bin/iota -optimize="speed (safety 0) (debug 0) (space 0) (compilation-speed 0)" -package=":prboom" prboom-build/src/prboom > prboom.lisp
 
+# There is some weird timing issue that makes make really want to reconfigure.
+# Work around this by updating Makefile.in's mtime.
+touch sdlquake-1.0.9/Makefile.in
 mkdir sdlquake-build
 pushd sdlquake-build
 CC=${TOOLDIR}/bin/clang ../sdlquake-1.0.9/configure --host=le32-iota --prefix=${TOOLDIR}/le32-iota --disable-sdltest --with-sdl-prefix=${TOOLDIR}/le32-iota
