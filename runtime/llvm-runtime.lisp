@@ -75,24 +75,28 @@ NEED-FRAME-POINTER must be true if ALLOCA is used.
 USES-SETJMP must be true if SETJMP.PREPARE is used.
 CONTEXT is bound the the current LLVM context.
 PERSONALITY is bound to the context's personality object."
-  `(defun ,name (llvm-context ,@lambda-list)
-     (declare (ignorable llvm-context ,@lambda-list))
-     (let (,@(when personality `((,personality (llvm-context-personality llvm-context))))
-           ,@(when context `((,context llvm-context))))
-       (declare (ignorable ,@(when personality `(,personality))
-                           ,@(when context `(,context))))
+  (multiple-value-bind (body decls doc)
+      (alexandria:parse-body body :documentation t)
+    `(defun ,name (llvm-context ,@lambda-list)
+       (declare (ignorable llvm-context ,@lambda-list))
+       ,@decls
+       ,doc
+       (let (,@(when personality `((,personality (llvm-context-personality llvm-context))))
+             ,@(when context `((,context llvm-context))))
+         (declare (ignorable ,@(when personality `(,personality))
+                             ,@(when context `(,context))))
 
-       ,(if (or need-frame-pointer
-                uses-setjmp)
-            `(let ((frame-pointer (llvm-context-stack-pointer llvm-context))
-                   (saved-setjmp-offset (fill-pointer (llvm-context-setjmp-stack llvm-context))))
-               (unwind-protect
-                    (locally
-                        ,@body)
-                 (setf (llvm-context-stack-pointer llvm-context) frame-pointer
-                       (fill-pointer (llvm-context-setjmp-stack llvm-context)) saved-setjmp-offset)))
-            `(locally
-                 ,@body)))))
+         ,(if (or need-frame-pointer
+                  uses-setjmp)
+              `(let ((frame-pointer (llvm-context-stack-pointer llvm-context))
+                     (saved-setjmp-offset (fill-pointer (llvm-context-setjmp-stack llvm-context))))
+                 (unwind-protect
+                      (locally
+                          ,@body)
+                   (setf (llvm-context-stack-pointer llvm-context) frame-pointer
+                         (fill-pointer (llvm-context-setjmp-stack llvm-context)) saved-setjmp-offset)))
+              `(locally
+                   ,@body))))))
 
 (defmacro sign-extend (value width)
   "Sign extend an value of the specified width."

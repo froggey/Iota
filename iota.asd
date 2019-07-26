@@ -3,7 +3,7 @@
   :version "1.0"
   :author "Henry Harrington <henry.harrington@gmail.com>"
   :license "MIT"
-  :depends-on (#:uiop #:babel #:nibbles #-mezzano #:lispbuilder-sdl)
+  :depends-on ("uiop" "babel" "nibbles" #-mezzano "lispbuilder-sdl" "alexandria")
   :serial t
   :components ((:module "runtime"
                 :components
