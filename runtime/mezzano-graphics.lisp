@@ -74,11 +74,8 @@
                             (sys.int::%complex-array-storage
                              (mezzano.gui:surface-pixels framebuffer)))
          with win-width = (mezzano.gui:surface-width framebuffer)
-         with win-height = (mezzano.gui:surface-height framebuffer)
          with g-width = *graphics-width*
          with g-height = *graphics-height*
-         with memory = (the octet-vector (llvm-context-memory llvm-context))
-         with adjusted-buf = (- buf +null-avoidance-offset+)
          for y below g-height
          do
            (loop
