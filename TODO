@@ -4,15 +4,6 @@ Better integration of C library functions (memcpy, etc).
   LLVM's memcpy/memset intrinsics already call into Lisp.
   Consider replacing newlib's generic math functions too.
 
-A linker.
-  Not having a linker prevents clang from actually producing a final, linked
-  executable. This breaks most projects and requires a pile of build-system
-  hacks to work around.
-  The linker should handle archives and produce a fully linked LLVM bitcode file
-  as output, ready to be run through the translator.
-  PNaCl uses gold with a custom driver in clang, this seems like a good place to
-  start.
-
 Improved syscall interface.
   Unix syscalls (open/close/read/write/etc) currently are performed by calling
   undefined C functions that have Lisp implementations.
@@ -29,7 +20,5 @@ C++ support.
 Represent i1 as generalized booleans.
   i1 integers are currently implemented using regular integers,
   using booleans should improve performance.
-
--o option (output file name) for the translator.
 
 Support NAN/+INF/-INF float values.
