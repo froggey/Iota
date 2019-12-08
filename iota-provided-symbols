@@ -1,0 +1,52 @@
+# This file contains a list of symbols that the runtime provides.
+# Undefined symbols in this list will not cause a link error.
+# It contains one symbol per line. Blank lines and lines starting
+# with '#' are ignored.
+
+# C & LLVM misc
+setjmp
+longjmp
+llvm.lifetime.start
+llvm.lifetime.end
+llvm.bswap.i32
+llvm.flt.rounds
+llvm.memset.p0i8.i32
+llvm.memset.p0i8.i64
+memmove
+llvm.memmove.p0i8.p0i8.i32
+memcpy
+llvm.memcpy.p0i8.p0i8.i32
+_exit
+
+# Unix support
+sbrk
+open
+close
+lseek
+write
+read
+fstat
+isatty
+access
+mkdir
+gettimeofday
+nanosleep
+
+# SDL support
+_iota_video_init
+_iota_video_quit
+_iota_set_video_mode
+_iota_video_update
+_iota_poll_event
+_iota_grab_input
+_iota_warp_cursor
+_iota_show_cursor
+_iota_set_caption
+
+# Weirdness
+# Not actually implemented, but should be investigated.
+_lseek64
+unlink
+stat
+kill
+getpid

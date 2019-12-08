@@ -352,8 +352,7 @@ clean-gamesPROGRAMS:
 	-test -z "$(games_PROGRAMS)" || rm -f $(games_PROGRAMS)
 prboom$(EXEEXT): $(prboom_OBJECTS) $(prboom_DEPENDENCIES)
 	@rm -f prboom$(EXEEXT)
-	$(LLVM_LINK) $(prboom_OBJECTS) SDL/*.o ../../toolchain/le32-iota/lib/libSDL.a ../../toolchain/le32-iota/lib/libc.a -o=$@
-#	$(LINK) $(prboom_OBJECTS) $(prboom_LDADD) $(LIBS)
+	$(LINK) $(prboom_OBJECTS) $(prboom_LDADD) $(LIBS)
 prboom-game-server$(EXEEXT): $(prboom_game_server_OBJECTS) $(prboom_game_server_DEPENDENCIES)
 	@rm -f prboom-game-server$(EXEEXT)
 	$(LINK) $(prboom_game_server_OBJECTS) $(prboom_game_server_LDADD) $(LIBS)

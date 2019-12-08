@@ -2868,7 +2868,7 @@ test "$ac_cv_exeext" = no && ac_cv_exeext=
 else
   ac_file=''
 fi
-ac_file=a.out
+
 { echo "$as_me:$LINENO: result: $ac_file" >&5
 echo "${ECHO_T}$ac_file" >&6; }
 if test -z "$ac_file"; then
@@ -2953,12 +2953,12 @@ for ac_file in conftest.exe conftest conftest.*; do
     * ) break;;
   esac
 done
-#else
-#  { { echo "$as_me:$LINENO: error: cannot compute suffix of executables: cannot compile and link
-#See \`config.log' for more details." >&5
-#echo "$as_me: error: cannot compute suffix of executables: cannot compile and link
-#See \`config.log' for more details." >&2;}
-#   { (exit 1); exit 1; }; }
+else
+  { { echo "$as_me:$LINENO: error: cannot compute suffix of executables: cannot compile and link
+See \`config.log' for more details." >&5
+echo "$as_me: error: cannot compute suffix of executables: cannot compile and link
+See \`config.log' for more details." >&2;}
+   { (exit 1); exit 1; }; }
 fi
 
 rm -f conftest$ac_cv_exeext

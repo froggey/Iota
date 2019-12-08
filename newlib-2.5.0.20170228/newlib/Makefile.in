@@ -918,13 +918,13 @@ uninstall-am: uninstall-toollibDATA uninstall-toollibLIBRARIES \
 @USE_LIBTOOL_TRUE@libc-libtool-objectlist: $(LIBM_OBJECTLISTS) $(LIBC_OBJECTLISTS)
 @USE_LIBTOOL_TRUE@	cat $(LIBM_OBJECTLISTS) $(LIBC_OBJECTLISTS) |  $(AWK) '{ libc[$$1] = $$2 }; END { for (x in libc) printf ("%s\n", libc[x]) }' > $@
 
-@USE_LIBTOOL_FALSE@libc.a: libc/libc.a libm/libm.a
+@USE_LIBTOOL_FALSE@libc.a: libc/libc.a libm.a
 @USE_LIBTOOL_FALSE@	rm -rf libc.a libg.a tmp
 @USE_LIBTOOL_FALSE@	mkdir tmp
 @USE_LIBTOOL_FALSE@	cd tmp; \
-@USE_LIBTOOL_FALSE@	 $(AR) x ../libm/libm.a ; \
 @USE_LIBTOOL_FALSE@	 $(AR) x ../libc/libc.a ; \
-@USE_LIBTOOL_FALSE@	 $(LLVM_LINK) *.o -o=../$@
+@USE_LIBTOOL_FALSE@	 $(AR) $(AR_FLAGS) ../$@ *.o
+@USE_LIBTOOL_FALSE@	$(RANLIB) libc.a
 @USE_LIBTOOL_FALSE@	ln libc.a libg.a >/dev/null 2>/dev/null || cp libc.a libg.a
 @USE_LIBTOOL_FALSE@	rm -rf tmp
 

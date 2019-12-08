@@ -162,16 +162,14 @@ libc-libtool-objectlist: $(LIBM_OBJECTLISTS) $(LIBC_OBJECTLISTS)
 
 else
 
-# Seriously hacked up for Iota. All objects (libc and libm) are dumped into libc.a,
-# which is an llvm bitcode file, not an archive.
-# This is because there's no real linker.
-libc.a: libc/libc.a libm/libm.a
+libc.a: libc/libc.a libm.a
 	rm -rf libc.a libg.a tmp
 	mkdir tmp
+    # no libm objects are linked in
 	cd tmp; \
-	 $(AR) x ../libm/libm.a ; \
 	 $(AR) x ../libc/libc.a ; \
-     $(LLVM_LINK) *.o -o=../$@
+	 $(AR) $(AR_FLAGS) ../$@ *.o
+	$(RANLIB) libc.a
 	ln libc.a libg.a >/dev/null 2>/dev/null || cp libc.a libg.a
 	rm -rf tmp
 
