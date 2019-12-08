@@ -26,6 +26,19 @@
   (setjmp-stack (make-array 8 :adjustable t :fill-pointer 0))
   personality)
 
+(defun register-callback (function-designator context)
+  (check-type function-designator (or function symbol))
+  (let ((existing (position function-designator (llvm-context-function-table context))))
+    (when (not existing)
+      (setf (llvm-context-function-table context)
+            (adjust-array (llvm-context-function-table context)
+                          (1+ (length (llvm-context-function-table context)))))
+      (setf existing (1- (length (llvm-context-function-table context))))
+      (setf (aref (llvm-context-function-table context) existing)
+            function-designator))
+    ;; +1 due to the pointer offset
+    (1+ existing)))
+
 (defclass unix-personality ()
   ((%brk :initarg :brk :accessor unix-personality-brk)
    (%file-table :initform (make-array 8 :adjustable t :fill-pointer 0)
