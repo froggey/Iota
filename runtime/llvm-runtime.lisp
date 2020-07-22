@@ -504,93 +504,50 @@ PERSONALITY is bound to the context's personality object."
   `(float ,value 0.0f0))
 
 ;;; Memory access.
-;;;
-;;; These macros call inlined functions to make it easier to trace memory accesses.
-;;; The actual access functions can be marked notinline & traced.
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (defvar *tracable-memory-accessors* nil))
 
-(declaim (inline %load.i8))
-(defun %load.i8 (llvm-context address)
-  (aref (the octet-vector (llvm-context-memory llvm-context)) (- address +null-avoidance-offset+)))
+(macrolet ((defmem (type accessor)
+             (let ((load-sym (intern (format nil "LOAD.~A" type) (symbol-package type)))
+                   (load-fn-sym (intern (format nil "%LOAD.~A" type) (symbol-package type)))
+                   (store-sym (intern (format nil "STORE.~A" type) (symbol-package type)))
+                   (store-fn-sym (intern (format nil "%STORE.~A" type) (symbol-package type))))
+               (if *tracable-memory-accessors*
+                   `(progn
+                      (defun ,load-fn-sym (address)
+                        (,accessor (the octet-vector (llvm-context-memory llvm-context))
+                                   (the fixnum (- address +null-avoidance-offset+))))
+                      (defmacro ,load-sym (address)
+                        `(,',load-fn-sym ,address))
+                      (defun ,store-fn-sym (value address)
+                        (setf (,accessor (the octet-vector (llvm-context-memory llvm-context))
+                                         (the fixnum (- address +null-avoidance-offset+)))
+                              value))
+                      (defmacro ,store-sym (value address)
+                        `(,',store-fn-sym ,value ,address)))
+                   ;; Define as macros for maximum performance.
+                   ;; SBCL gives up inlining if they're inline functions because there are so
+                   ;; many calls.
+                   `(progn
+                      (defmacro ,load-sym (address)
+                        `(,',accessor (the octet-vector (llvm-context-memory llvm-context))
+                                      (the fixnum (- ,address +null-avoidance-offset+))))
+                      (defmacro ,store-sym (value address)
+                        (let ((value-sym (gensym "VALUE")))
+                          `(let ((,value-sym ,value))
+                             (setf (,',accessor (the octet-vector (llvm-context-memory llvm-context))
+                                                (the fixnum (- ,address +null-avoidance-offset+)))
+                                   ,value-sym)))))))))
+  (defmem i8 aref)
+  (defmem i16 nibbles:ub16ref/le)
+  (defmem i32 nibbles:ub32ref/le)
+  (defmem i64 nibbles:ub64ref/le)
+  (defmem f32 nibbles:ieee-single-ref/le)
+  (defmem f64 nibbles:ieee-double-ref/le))
 
-(defmacro load.i8 (address)
-  `(%load.i8 llvm-context ,address))
-
-(declaim (inline %load.i16))
-(defun %load.i16 (llvm-context address)
-  (nibbles:ub16ref/le (the octet-vector (llvm-context-memory llvm-context)) (- address +null-avoidance-offset+)))
-
-(defmacro load.i16 (address)
-  `(%load.i16 llvm-context ,address))
-
-(declaim (inline %load.i32))
-(defun %load.i32 (llvm-context address)
-  (nibbles:ub32ref/le (the octet-vector (llvm-context-memory llvm-context)) (- address +null-avoidance-offset+)))
-
-(defmacro load.i32 (address)
-  `(%load.i32 llvm-context ,address))
-
-(declaim (inline %load.i64))
-(defun %load.i64 (llvm-context address)
-  (nibbles:ub64ref/le (the octet-vector (llvm-context-memory llvm-context)) (- address +null-avoidance-offset+)))
-
-(defmacro load.i64 (address)
-  `(%load.i64 llvm-context ,address))
-
-(declaim (inline %load.f32))
-(defun %load.f32 (llvm-context address)
-  (nibbles:ieee-single-ref/le (the octet-vector (llvm-context-memory llvm-context)) (- address +null-avoidance-offset+)))
-
-(defmacro load.f32 (address)
-  `(%load.f32 llvm-context ,address))
-
-(declaim (inline %load.f64))
-(defun %load.f64 (llvm-context address)
-  (nibbles:ieee-double-ref/le (the octet-vector (llvm-context-memory llvm-context)) (- address +null-avoidance-offset+)))
-
-(defmacro load.f64 (address)
-  `(%load.f64 llvm-context ,address))
-
-(declaim (inline %store.i8))
-(defun %store.i8 (llvm-context value address)
-  (setf (aref (the octet-vector (llvm-context-memory llvm-context)) (- address +null-avoidance-offset+)) value))
-
-(defmacro store.i8 (value address)
-  `(%store.i8 llvm-context ,value ,address))
-
-(declaim (inline %store.i16))
-(defun %store.i16 (llvm-context value address)
-  (setf (nibbles:ub16ref/le (the octet-vector (llvm-context-memory llvm-context)) (- address +null-avoidance-offset+)) value))
-
-(defmacro store.i16 (value address)
-  `(%store.i16 llvm-context ,value ,address))
-
-(declaim (inline %store.i32))
-(defun %store.i32 (llvm-context value address)
-  (setf (nibbles:ub32ref/le (the octet-vector (llvm-context-memory llvm-context)) (- address +null-avoidance-offset+)) value))
-
-(defmacro store.i32 (value address)
-  `(%store.i32 llvm-context ,value ,address))
-
-(declaim (inline %store.i64))
-(defun %store.i64 (llvm-context value address)
-  (setf (nibbles:ub64ref/le (the octet-vector (llvm-context-memory llvm-context)) (- address +null-avoidance-offset+)) value))
-
-(defmacro store.i64 (value address)
-  `(%store.i64 llvm-context ,value ,address))
-
-(declaim (inline %store.f32))
-(defun %store.f32 (llvm-context value address)
-  (setf (nibbles:ieee-single-ref/le (the octet-vector (llvm-context-memory llvm-context)) (- address +null-avoidance-offset+)) value))
-
-(defmacro store.f32 (value address)
-  `(%store.f32 llvm-context ,value ,address))
-
-(declaim (inline %store.f64))
-(defun %store.f64 (llvm-context value address)
-  (setf (nibbles:ieee-double-ref/le (the octet-vector (llvm-context-memory llvm-context)) (- address +null-avoidance-offset+)) value))
-
-(defmacro store.f64 (value address)
-  `(%store.f64 llvm-context ,value ,address))
+(defun trace-loads-stores ()
+  (trace %load.i8 %load.i16 %load.i32 %load.i64 %load.f32 %load.f64
+         %store.i8 %store.i16 %store.i32 %store.i64 %store.f32 %store.f64))
 
 ;;; Alloca.
 
