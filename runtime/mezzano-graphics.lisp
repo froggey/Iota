@@ -63,25 +63,27 @@
          1)))
 
 (define-llvm-function |_iota_video_update| ((buf))
-  (declare (optimize (speed 3) (safety 0)))
+  (declare (optimize (speed 3) (safety 0))
+           (type (unsigned-byte 32) buf))
   (when (not (zerop buf))
     (multiple-value-bind (left right top bottom)
         (mezzano.gui.widgets:frame-size *graphics-frame*)
-      (declare (ignore right bottom))
+      (declare (ignore right bottom)
+               (type fixnum left top))
       (loop
          with framebuffer = (mezzano.gui.compositor:window-buffer *graphics-window*)
          with pixels = (the (simple-array (unsigned-byte 32) (* *))
                             (mezzano.gui:surface-pixels framebuffer))
-         with win-width = (mezzano.gui:surface-width framebuffer)
-         with g-width = *graphics-width*
-         with g-height = *graphics-height*
-         for y below g-height
+         with win-width fixnum = (mezzano.gui:surface-width framebuffer)
+         with g-width fixnum = *graphics-width*
+         with g-height fixnum = *graphics-height*
+         for y fixnum below g-height
          do
            (loop
-              for x below g-width
-              do (setf (row-major-aref pixels (+ left x (* (+ top y) win-width)))
+              for x fixnum below g-width
+              do (setf (row-major-aref pixels (the fixnum (+ left (the fixnum (+ x (the fixnum (* (the fixnum (+ top y)) win-width)))))))
                        (logior #xFF000000
-                               (load.i32 (+ buf (* (+ x (* y g-width)) 4)))))))
+                               (load.i32 (the fixnum (+ buf (the fixnum (* (the fixnum (+ x (the fixnum (* y g-width)))) 4)))))))))
       (mezzano.gui.compositor:damage-window *graphics-window*
                                             left top
                                             *graphics-width* *graphics-height*)))

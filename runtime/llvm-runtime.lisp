@@ -26,6 +26,9 @@
   (setjmp-stack (make-array 8 :adjustable t :fill-pointer 0))
   personality)
 
+(defmethod print-object ((object llvm-context) stream)
+  (print-unreadable-object (object stream :type t :identity t)))
+
 (defun register-callback (function-designator context)
   (check-type function-designator (or function symbol))
   (let ((existing (position function-designator (llvm-context-function-table context))))
@@ -101,27 +104,37 @@ PERSONALITY is bound to the context's personality object."
 
          ,(if (or need-frame-pointer
                   uses-setjmp)
-              `(let ((frame-pointer (llvm-context-stack-pointer llvm-context))
-                     (saved-setjmp-offset (fill-pointer (llvm-context-setjmp-stack llvm-context))))
+              `(let (,@(when need-frame-pointer (list `(frame-pointer (llvm-context-stack-pointer llvm-context))))
+                     ,@(when uses-setjmp (list `(saved-setjmp-offset (fill-pointer (llvm-context-setjmp-stack llvm-context))))))
                  (unwind-protect
                       (locally
                           ,@body)
-                   (setf (llvm-context-stack-pointer llvm-context) frame-pointer
-                         (fill-pointer (llvm-context-setjmp-stack llvm-context)) saved-setjmp-offset)))
+                   ,@(when need-frame-pointer
+                       (list `(setf (llvm-context-stack-pointer llvm-context) frame-pointer)))
+                   ,@(when uses-setjmp
+                       (list `(setf (fill-pointer (llvm-context-setjmp-stack llvm-context)) saved-setjmp-offset)))))
               `(locally
                    ,@body))))))
 
-(defmacro sign-extend (value width)
+(defun sign-extend (value width)
   "Sign extend an value of the specified width."
+  (if (logbitp (1- width) value)
+      (logior (ash -1 (1- width)) value)
+      value))
+
+(define-compiler-macro sign-extend (&whole whole value width)
+  (declare (ignorable whole))
   (cond
     #+sbcl
     ((member width '(8 16 32))
      `(sb-vm::sign-extend ,value ,width))
-    (t
-     `(let ((value ,value))
-        (if (logbitp (1- ,width) value)
-            (logior (ash -1 (1- ,width)) value)
-            value)))))
+    ((integerp width)
+     `(the (signed-byte ,width)
+           (let ((value ,value))
+             (if (logbitp (1- ,width) value)
+                 (logior (ash -1 (1- ,width)) value)
+                 value))))
+    (t whole)))
 
 (defmacro define-sized-op (name (lambda-list size &key (restrict-output t)) &body body)
   (flet ((emit (actual-size)
@@ -131,10 +144,11 @@ PERSONALITY is bound to the context's personality object."
              `(progn
                 ,(if restrict-output
                      `(defmacro ,real-name ,lambda-list
-                        `(ldb (byte ,',actual-size 0)
-                              ,(let ((,size ,actual-size))
-                                    (declare (ignorable ,size))
-                                    ,@body)))
+                        `(the (unsigned-byte ,',actual-size)
+                              (ldb (byte ,',actual-size 0)
+                                   ,(let ((,size ,actual-size))
+                                      (declare (ignorable ,size))
+                                      ,@body))))
                      `(defmacro ,real-name ,lambda-list
                         (let ((,size ,actual-size))
                           (declare (ignorable ,size))
@@ -312,10 +326,10 @@ PERSONALITY is bound to the context's personality object."
 
 ;;; Conversion operators.
 
-(defmacro define-integer-conversion-op (name (value size) &body body)
+(defmacro define-integer-conversion-op (name (value size &optional result-size) &body body)
   (flet ((emit (actual-size)
            `(define-sized-op ,(intern (format nil "~S.I~D" name actual-size))
-                ((,value) ,(gensym))
+                ((,value) ,(or result-size (gensym)))
               (let ((,size ,actual-size))
                 (declare (ignorable ,size))
                 ,@body))))
@@ -326,7 +340,18 @@ PERSONALITY is bound to the context's personality object."
        ,(emit 32)
        ,(emit 64))))
 
-(define-integer-conversion-op sext (value size)
+(define-integer-conversion-op sext (value input-size result-size)
+  #-sbcl
+  (cond ((> result-size input-size)
+         ;; Directly produce an unsigned result here, no signed intermediate.
+         `(the (unsigned-byte ,result-size)
+               (if (logbitp (1- ,input-size) ,value)
+                   (logior ,(ash (1- (ash 1 (- result-size input-size))) input-size)
+                           ,value)
+                   ,value)))
+        (t
+         `(sign-extend ,value ,input-size)))
+  #+sbcl
   `(sign-extend ,value ,size))
 
 (define-integer-conversion-op zext (value size)
