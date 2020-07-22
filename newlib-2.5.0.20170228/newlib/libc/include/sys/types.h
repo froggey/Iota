@@ -64,8 +64,6 @@ typedef	quad_t *	qaddr_t;
 #include <sys/_stdint.h>
 
 #if __BSD_VISIBLE
-#include <machine/endian.h>
-#include <sys/select.h>
 #  define	physadr		physadr_t
 #  define	quad		quad_t
 
@@ -234,6 +232,11 @@ typedef	__suseconds_t	suseconds_t;
 #endif
 
 typedef	__int64_t	sbintime_t;
+
+#if __BSD_VISIBLE
+#include <machine/endian.h>
+#include <sys/select.h>
+#endif
 
 #include <sys/features.h>
 #include <sys/_pthreadtypes.h>
