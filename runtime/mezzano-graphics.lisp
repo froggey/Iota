@@ -70,9 +70,8 @@
       (declare (ignore right bottom))
       (loop
          with framebuffer = (mezzano.gui.compositor:window-buffer *graphics-window*)
-         with pixels = (the (simple-array (unsigned-byte 32) (*))
-                            (sys.int::%complex-array-storage
-                             (mezzano.gui:surface-pixels framebuffer)))
+         with pixels = (the (simple-array (unsigned-byte 32) (* *))
+                            (mezzano.gui:surface-pixels framebuffer))
          with win-width = (mezzano.gui:surface-width framebuffer)
          with g-width = *graphics-width*
          with g-height = *graphics-height*
@@ -80,7 +79,7 @@
          do
            (loop
               for x below g-width
-              do (setf (aref pixels (+ left x (* (+ top y) win-width)))
+              do (setf (row-major-aref pixels (+ left x (* (+ top y) win-width)))
                        (logior #xFF000000
                                (load.i32 (+ buf (* (+ x (* y g-width)) 4)))))))
       (mezzano.gui.compositor:damage-window *graphics-window*

@@ -345,7 +345,7 @@ PERSONALITY is bound to the context's personality object."
   #+sbcl
   `(ldb (byte 32 0) (sb-kernel:single-float-bits ,value))
   #+mezzano
-  `(sys.int::%single-float-as-integer ,value)
+  `(mezzano.extensions:single-float-to-ieee-binary32 ,value)
   #-(or sbcl mezzano)
   `(let ((tmp (make-array 4 :element-type '(unsigned-byte 8))))
      (declare (dynamic-extent tmp))
@@ -356,7 +356,7 @@ PERSONALITY is bound to the context's personality object."
   #+sbcl
   `(sb-kernel:make-single-float (sign-extend ,value 32))
   #+mezzano
-  `(sys.int::%integer-as-single-float ,value)
+  `(mezzano.extensions:ieee-binary32-to-single-float ,value)
   #-(or sbcl mezzano)
   `(let ((tmp (make-array 4 :element-type '(unsigned-byte 8))))
      (declare (dynamic-extent tmp))
@@ -369,7 +369,7 @@ PERSONALITY is bound to the context's personality object."
         (logior (sb-kernel:double-float-low-bits ,value)
                 (ash (sb-kernel:double-float-high-bits ,value) 32)))
   #+mezzano
-  `(sys.int::%double-float-as-integer ,value)
+  `(mezzano.extensions:double-float-to-ieee-binary64 ,value)
   #-(or sbcl mezzano)
   `(let ((tmp (make-array 8 :element-type '(unsigned-byte 8))))
      (declare (dynamic-extent tmp))
@@ -381,7 +381,7 @@ PERSONALITY is bound to the context's personality object."
   `(sb-kernel:make-double-float (sign-extend (ldb (byte 32 32) ,value) 32)
                                 (ldb (byte 32 0) ,value))
   #+mezzano
-  `(sys.int::%integer-as-double-float ,value)
+  `(mezzano.extensions:ieee-binary64-to-double-float ,value)
   #-(or sbcl mezzano)
   `(let ((tmp (make-array 8 :element-type '(unsigned-byte 8))))
      (declare (dynamic-extent tmp))
