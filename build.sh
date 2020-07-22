@@ -39,6 +39,7 @@ touch sdlquake-1.0.9/Makefile.in
 mkdir sdlquake-build
 pushd sdlquake-build
 CC="${TOOLDIR}/bin/clang -Wl,-optimize=speed+\(safety+0\)+\(debug+0\)+\(space+0\)+\(compilation-speed+0\),-package=:sdlquake" ../sdlquake-1.0.9/configure --host=le32-iota --prefix=${TOOLDIR}/le32-iota --disable-sdltest --with-sdl-prefix=${TOOLDIR}/le32-iota
+touch sdlquake-1.0.9/Makefile.in
 make ${MAKEFLAGS}
 popd
 cp sdlquake-build/sdlquake sdlquake.lisp
