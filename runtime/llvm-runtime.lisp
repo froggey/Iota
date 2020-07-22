@@ -607,9 +607,12 @@ PERSONALITY is bound to the context's personality object."
 ;;; Select.
 
 (defmacro select (condition true false)
-  `(if (not (eql ,condition 0))
-       ,true
-       ,false))
+  `(let ((condition ,condition)
+         (true ,true)
+         (false ,false))
+     (if (not (eql condition 0))
+         true
+         false)))
 
 ;;; Setjmp support.
 
