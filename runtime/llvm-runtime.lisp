@@ -594,10 +594,15 @@ PERSONALITY is bound to the context's personality object."
 
 ;;; Alloca.
 
-(defmacro alloca (size)
-  (incf size 15)
-  (setf size (logand size (lognot 15)))
-  `(decf (llvm-context-stack-pointer llvm-context) ,size))
+(defmacro alloca (size &optional n-elements)
+  (cond (n-elements
+         ;; Non-staic alloca.
+         `(decf (llvm-context-stack-pointer llvm-context)
+                (align-up (* ,size ,n-elements) 16)))
+        (t
+         (incf size 15)
+         (setf size (logand size (lognot 15)))
+         `(decf (llvm-context-stack-pointer llvm-context) ,size))))
 
 ;;; Select.
 
