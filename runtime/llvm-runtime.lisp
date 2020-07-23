@@ -345,10 +345,12 @@ PERSONALITY is bound to the context's personality object."
   (cond ((> result-size input-size)
          ;; Directly produce an unsigned result here, no signed intermediate.
          `(the (unsigned-byte ,result-size)
-               (if (logbitp (1- ,input-size) ,value)
-                   (logior ,(ash (1- (ash 1 (- result-size input-size))) input-size)
-                           ,value)
-                   ,value)))
+               (let ((value ,value))
+                 (declare (type (unsigned-byte ,input-size) value))
+                 (if (logbitp (1- ,input-size) value)
+                     (logior ,(ash (1- (ash 1 (- result-size input-size))) input-size)
+                             value)
+                     value))))
         (t
          `(sign-extend ,value ,input-size)))
   #+sbcl
