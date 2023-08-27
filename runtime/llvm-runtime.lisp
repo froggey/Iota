@@ -125,7 +125,7 @@ PERSONALITY is bound to the context's personality object."
 (define-compiler-macro sign-extend (&whole whole value width)
   (declare (ignorable whole))
   (cond
-    #+sbcl
+    #+(and sbcl (not ppc64))
     ((member width '(8 16 32))
      `(sb-vm::sign-extend ,value ,width))
     ((integerp width)
