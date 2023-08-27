@@ -354,7 +354,7 @@ PERSONALITY is bound to the context's personality object."
         (t
          `(sign-extend ,value ,input-size)))
   #+sbcl
-  `(sign-extend ,value ,size))
+  `(sign-extend ,value ,input-size))
 
 (define-integer-conversion-op zext (value size)
   value)
