@@ -627,6 +627,10 @@ PERSONALITY is bound to the context's personality object."
           (ash (ldb (byte 8 16) value) 8)
           (ldb (byte 8 24) value)))
 
+(define-llvm-function |llvm.bswap.i32| ((value))
+  (logior (ash (ldb (byte 8 0) value) 8)
+          (ldb (byte 8 8) value)))
+
 (define-llvm-function |llvm.flt.rounds| (())
   ;; Rounding mode 1, round to nearest.
   1)
@@ -665,6 +669,16 @@ PERSONALITY is bound to the context's personality object."
 
 (define-llvm-function |llvm.memcpy.p0i8.p0i8.i32| ((d s n align is-volatile))
   (real-memmove llvm-context d s n))
+
+(define-llvm-function |llvm.memcpy.p0i8.p0i8.i64| ((d s n align is-volatile))
+  (real-memmove llvm-context d s n))
+
+
+;;this is just a de brujin sequence from wikipedia
+;;TODO: most architectures have a clz function, maybe use that
+(define-llvm-function |llvm.ctlz.i32| ((value zero-error-p))
+  (- 32 (integer-length values)))
+
 
 ;;; It's a UNIX system! I know this!
 
@@ -944,6 +958,15 @@ Assumes the context is freshly created."
     (ensure-directories-exist (parse-unix-path unix path :ensure-directory t))
     0))
 
+;;we don't have hardlinks implemented, so we're just gonna copy.
+;;hope this works well enough
+(define-llvm-function |link| ((oldpath newpath))
+  (let ((old (parse-unix-path unix oldpath))
+	(new (parse-unix-path unix new)))
+    (unless (probe-file new)
+      (uiop:copy-file old new)
+      0)))
+
 (define-llvm-function |gettimeofday| ((tv tz))
   (let* ((unix-epoch (encode-universal-time 0 0 0 1 1 1970 0))
          (current-time (/ (get-internal-real-time)
@@ -965,4 +988,8 @@ Assumes the context is freshly created."
   (when (not (zerop rem))
       (store.i32 0 rem)
       (store.i32 0 (+ rem 4)))
+  0)
+
+(define-llvm-function |usleep| ((usec))
+  (sleep (/ usec (* 1000 1000)))
   0)
