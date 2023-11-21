@@ -674,8 +674,6 @@ PERSONALITY is bound to the context's personality object."
   (real-memmove llvm-context d s n))
 
 
-;;this is just a de brujin sequence from wikipedia
-;;TODO: most architectures have a clz function, maybe use that
 (define-llvm-function |llvm.ctlz.i32| ((value zero-error-p))
   (- 32 (integer-length values)))
 
