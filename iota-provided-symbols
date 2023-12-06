@@ -17,6 +17,9 @@ llvm.memmove.p0i8.p0i8.i32
 memcpy
 llvm.memcpy.p0i8.p0i8.i32
 _exit
+llvm.bswap.i16
+llvm.ctlz.i32
+llvm.memcpy.p0i8.p0i8.i64
 
 # Unix support
 sbrk
@@ -31,6 +34,8 @@ access
 mkdir
 gettimeofday
 nanosleep
+usleep
+link
 
 # SDL support
 _iota_video_init

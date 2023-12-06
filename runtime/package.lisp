@@ -390,15 +390,20 @@
            #:|llvm.memmove.p0i8.p0i8.i32|
            #:|llvm.memset.p0i8.i32|
            #:|llvm.memset.p0i8.i64|
+	   #:|llvm.memcpy.p0i8.p0i8.i64|
+	   #:|llvm.bswap.i32|
+	   #:|llvm.ctlz.i32|
            #:|longjmp|
            #:|lseek|
            #:|mkdir|
            #:|nanosleep|
+	   #:|usleep|
            #:|open|
            #:|read|
            #:|sbrk|
            #:|setjmp|
            #:|write|
+	   #:|link|
            ;; SDL support functions.
            #:|_iota_video_init|
            #:|_iota_video_quit|

@@ -627,7 +627,7 @@ PERSONALITY is bound to the context's personality object."
           (ash (ldb (byte 8 16) value) 8)
           (ldb (byte 8 24) value)))
 
-(define-llvm-function |llvm.bswap.i32| ((value))
+(define-llvm-function |llvm.bswap.i16| ((value))
   (logior (ash (ldb (byte 8 0) value) 8)
           (ldb (byte 8 8) value)))
 
