@@ -1,3 +1,5 @@
+Superseded by https://github.com/froggey/wasm2cl
+
 Iota is an LLVM to CL transpiler, similar to emscripten. It converts LLVM bitcode
 to safe, portable Common Lisp code.
 
